@@ -63,6 +63,21 @@ bool aluAdd6() {
 
 
 
+bool busAdd1() {
+  Bus in1 {};
+  Bus in2 {};
+  in1[1] = {true};
+
+  in2[2] = {true};
+  in2[1] = {true};
+
+  auto res = aluBus(in1, in2, !inv1, !inv2, addOP);
+  Bus resBus {};
+  resBus[3] = {true};
+  auto re = (res.result == resBus).value == true;
+  return re;
+}
+
 void ALUTESTS() {
   std::cout << "\n Now running alu tests \n";
   CHECK(aluAnd1(), "and1");
@@ -78,6 +93,8 @@ void ALUTESTS() {
   CHECK(aluAdd3(), "add3");
   CHECK(aluAdd4(), "add4");
   CHECK(aluAdd6(), "add6");
+
+  CHECK(busAdd1(), "busAdd1");
 
   std::cout << "\n Alu testes finnished \n";
 }
