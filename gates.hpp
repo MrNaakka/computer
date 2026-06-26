@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <array>
 #include <ostream>
 struct Gate {
@@ -32,4 +33,14 @@ inline std::ostream &operator<<(std::ostream &os, Gate &g) {
 }
 
 
+inline Gate operator==(Gate left, Gate right) {
+  return !xorGate(left, right);
+}
 
+inline Gate operator==(Bus &left, Bus &right)  {
+  Gate match = {true};
+  for (int i = 0; i < WORD; ++i) {
+    match = match & (left[i] == right[i]);
+  }
+  return match;
+}
