@@ -2,21 +2,19 @@
 #include "../multiplexor.hpp"
 
 
-std::array<Gate, 5> in {Gate{true}, {false}, {false}, {false}, {false}};
-std::array<Gate, 3> SS {Gate{false}, {false}, {false}};
+void muxBit() {
+  std::array<Gate, 5> in{Gate{true}, {false}, {false}, {false}, {false}};
+  std::array<Gate, 3> SS{Gate{false}, {false}, {false}};
 
-bool muxBit1() {
-  return mux1BitNto1(in, SS).value == true;
-}
-bool muxBit2() {
-  auto temp = SS;
-  temp[0] = {true};
-  return mux1BitNto1(in, temp).value == false;
-}
+  CHECK(mux1BitNto1(in, SS).value == true);
 
+  SS[0] = {true};
+  CHECK(mux1BitNto1(in, SS).value == false);
+}
 
 void MUXTESTS() {
-  CHECK(muxBit1(), "mux1");
-  CHECK(muxBit2(), "mux2");
+  std::cout << "\n Now running mux tests \n";
+  muxBit();
+  std::cout << "\n Mux tests finished \n";
 }
 

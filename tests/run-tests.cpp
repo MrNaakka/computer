@@ -1,3 +1,4 @@
+#include "_test.hpp"
 #include "mux-test.cpp"
 #include "alu-test.cpp"
 
@@ -7,6 +8,7 @@ int main() {
   ALUTESTS();
 
 
+  testsSummary();
   return 0;
 
 }
