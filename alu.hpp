@@ -4,7 +4,14 @@
 #include "multiplexor.hpp"
 #include <array>
 
-inline WithCarrieOut<Gate> alu1Bit(Gate in1, Gate in2, Gate in1SS, Gate in2SS,
+
+
+struct Alu1BitResult {
+  Gate result;
+  Gate carry_out;
+  Gate addOut;
+};
+inline Alu1BitResult alu1Bit(Gate in1, Gate in2, Gate less, Gate in1SS, Gate in2SS,
                                    Gate carryIn,
                                    std::array<Gate, 2> operatorSS) {
 
@@ -16,20 +23,45 @@ inline WithCarrieOut<Gate> alu1Bit(Gate in1, Gate in2, Gate in1SS, Gate in2SS,
 
   auto addRes = add1Bit(i1, i2, carryIn);
 
-  std::array<Gate, 3> muxIn{andRes, orRes, addRes.result};
+  std::array<Gate, 4> muxIn{andRes, orRes, addRes.result, less};
   Gate result = mux1BitNto1(muxIn, operatorSS);
-  return {.result = result, .carry_out = addRes.carry_out};
+
+  return {.result = result, .carry_out = addRes.carry_out, .addOut = addRes.result};
 }
 
-inline WithCarrieOut<Bus> aluBus(Bus &in1, Bus &in2, Gate in1SS, Gate in2SS,
+struct AluBusResult {
+  Bus result;
+  Gate carry_out;
+  Gate overflow;
+};
+inline AluBusResult aluBus(Bus &in1, Bus &in2, Gate in1SS, Gate in2SS,
                                  std::array<Gate, 2> operatorSS) {
 
   Gate carryIn = in2SS;
   Bus resultBus{};
+  Gate addOutMSB {};
+  Gate overflow {};
   for (int i = 0; i < WORD; ++i) {
-    auto res = alu1Bit(in1[i], in2[i], in1SS, in2SS, carryIn, operatorSS);
+    auto res = alu1Bit(in1[i], in2[i], {false}, in1SS, in2SS, carryIn, operatorSS);
+    if (i == WORD - 1) {
+      addOutMSB= res.addOut;
+      overflow = xorGate(carryIn, res.carry_out);
+    }
     resultBus[i] = res.result;
     carryIn = res.carry_out;
   }
-  return {.result = resultBus, .carry_out = carryIn};
+  Gate lessForBit0 = xorGate(overflow, addOutMSB);
+
+  auto res0 = alu1Bit(in1[0], in2[0], lessForBit0, in1SS, in2SS, in2SS, operatorSS);
+
+
+  resultBus[0] = res0.result;
+  return {.result = resultBus, .carry_out = carryIn, .overflow = overflow};
 }
+
+
+
+
+
+
+
