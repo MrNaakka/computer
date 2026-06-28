@@ -5,9 +5,10 @@
 #include <iostream>
 #include <string>
 
-#include "adder.hpp"
-#include "gates.hpp"
-#include "alu.hpp"
+
+#include "../combinational/adder.hpp"
+#include "../combinational/gates.hpp"
+#include "../combinational/alu.hpp"
 
 void calculator() {
   uint32_t num1;

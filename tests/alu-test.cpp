@@ -1,5 +1,5 @@
-#include "../alu.hpp"
-#include "../gates.hpp"
+#include "../combinational/alu.hpp"
+#include "../combinational/gates.hpp"
 #include "_test.hpp"
 #include <array>
 

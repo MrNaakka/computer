@@ -1,5 +1,5 @@
 #include "_test.hpp"
-#include "../multiplexor.hpp"
+#include "../combinational/multiplexor.hpp"
 
 
 void muxBit() {
