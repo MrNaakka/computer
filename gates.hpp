@@ -8,14 +8,20 @@ struct Gate {
 
 constexpr int WORD = 32;
 
-inline Gate andGate(Gate in1, Gate in2) { return {.value = in1.value && in2.value}; }
+//only assumption is the nAndGate. Everything else is derived from that.
+inline Gate nAndGate(Gate in1, Gate in2) {return {!(in1.value && in2.value)}; }
+
+
+inline Gate notGate(Gate in) { return nAndGate(in, in); }
+inline Gate operator!(Gate in) { return notGate(in); };
+
+
+inline Gate andGate(Gate in1, Gate in2) { return  !nAndGate(in1, in2); }
 inline Gate operator&(Gate in1, Gate in2) { return andGate(in1, in2); }
 
-inline Gate orGate(Gate in1, Gate in2) { return {.value = in1.value || in2.value}; }
+inline Gate orGate(Gate in1, Gate in2) { return !((!in1) & (!in2)); }
 inline Gate operator|(Gate in1, Gate in2) { return orGate(in1, in2); }
 
-inline Gate notGate(Gate in) { return {.value = !in.value}; }
-inline Gate operator!(Gate in) { return notGate(in); };
 
 inline Gate xorGate(Gate in1, Gate in2) { return ((!in1) & in2) | (in1 & (!in2)); }
 
