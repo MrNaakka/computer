@@ -1,6 +1,6 @@
 #pragma once
-#include <iostream>
 #include <array>
+#include <iostream>
 #include <ostream>
 struct Gate {
   bool value;
@@ -8,22 +8,21 @@ struct Gate {
 
 constexpr int WORD = 32;
 
-//only assumption is the nAndGate. Everything else is derived from that.
-inline Gate nAndGate(Gate in1, Gate in2) {return {!(in1.value && in2.value)}; }
-
+// only assumption is the nAndGate. Everything else is derived from that.
+inline Gate nAndGate(Gate in1, Gate in2) { return {!(in1.value && in2.value)}; }
 
 inline Gate notGate(Gate in) { return nAndGate(in, in); }
 inline Gate operator!(Gate in) { return notGate(in); };
 
-
-inline Gate andGate(Gate in1, Gate in2) { return  !nAndGate(in1, in2); }
+inline Gate andGate(Gate in1, Gate in2) { return !nAndGate(in1, in2); }
 inline Gate operator&(Gate in1, Gate in2) { return andGate(in1, in2); }
 
 inline Gate orGate(Gate in1, Gate in2) { return !((!in1) & (!in2)); }
 inline Gate operator|(Gate in1, Gate in2) { return orGate(in1, in2); }
 
-
-inline Gate xorGate(Gate in1, Gate in2) { return ((!in1) & in2) | (in1 & (!in2)); }
+inline Gate xorGate(Gate in1, Gate in2) {
+  return ((!in1) & in2) | (in1 & (!in2));
+}
 
 using Bus = std::array<Gate, WORD>;
 
@@ -38,15 +37,20 @@ inline std::ostream &operator<<(std::ostream &os, Gate &g) {
   return os;
 }
 
+inline Gate operator==(Gate left, Gate right) { return !xorGate(left, right); }
 
-inline Gate operator==(Gate left, Gate right) {
-  return !xorGate(left, right);
-}
-
-inline Gate operator==(Bus &left, Bus &right)  {
+inline Gate operator==(Bus &left, Bus &right) {
   Gate match = {true};
   for (int i = 0; i < WORD; ++i) {
     match = match & (left[i] == right[i]);
   }
   return match;
+}
+
+inline Bus operator&(Bus &left, Gate right) {
+  Bus result{};
+  for (int i = 0; i < WORD; ++i) {
+    result[i] = left[i] & right;
+  }
+  return result;
 }
