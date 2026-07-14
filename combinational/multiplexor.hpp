@@ -25,6 +25,18 @@ constexpr std::size_t ceilLog2(uint32_t n) {
   return bits;
 }
 
+
+template <std::size_t N>
+inline Gate addressMatch(const std::array<Gate, N>& address, uint32_t num) {
+  Gate match {true};
+  for (uint32_t j = 0; j < N; ++j) {
+    Gate currentBit = {static_cast<bool>((num >> j) & 1)};
+    Gate currentBitMatches = !xorGate(address[j], currentBit);
+    match = match & currentBitMatches;
+  }
+  return match;
+}
+
 template <std::size_t n>
 Gate mux1BitNto1(std::array<Gate, n> &in1,
                  std::array<Gate, ceilLog2(n)> &selectorSignal) {
@@ -32,13 +44,7 @@ Gate mux1BitNto1(std::array<Gate, n> &in1,
 
   Gate result{};
   for (uint32_t i = 0; i < n; ++i) {
-    Gate match{.value = true};
-    for (uint32_t j = 0; j < k; ++j) {
-
-      Gate currentBit = {.value = static_cast<bool>((i >> j) & 1)};
-      auto currentBitMatches = !xorGate(selectorSignal[j], currentBit);
-      match = match & currentBitMatches;
-    }
+    Gate match = addressMatch(selectorSignal, i);
     result = result | (match & in1[i]);
   }
   return result;
