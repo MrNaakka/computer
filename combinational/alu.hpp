@@ -36,7 +36,7 @@ struct AluBusResult {
 };
 
 inline AluBusResult aluBus(Bus &in1, Bus &in2, Gate in1SS, Gate in2SS,
-                           std::array<Gate, 2> operatorSS) {
+                           Gate eqSS, std::array<Gate, 2> operatorSS) {
   Gate carryIn = in2SS;
   Bus resultBus{};
   Gate addOutMSB{};
@@ -57,5 +57,13 @@ inline AluBusResult aluBus(Bus &in1, Bus &in2, Gate in1SS, Gate in2SS,
       alu1Bit(in1[0], in2[0], lessForBit0, in1SS, in2SS, in2SS, operatorSS);
 
   resultBus[0] = res0.result;
+
+  //for the equal operator
+  Gate has1 {};
+  for (int i = 0; i < WORD; ++i) {
+    has1 = resultBus[i] | has1;
+  }
+  resultBus[0] = mux1Bit(resultBus[0], has1, eqSS);
+
   return {.result = resultBus, .carry_out = carryIn, .overflow = overflow};
 }
