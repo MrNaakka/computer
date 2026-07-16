@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ostream>
 struct Gate {
-  bool value;
+  bool value{};
 };
 
 constexpr int WORD = 32;
@@ -16,11 +16,19 @@ inline Gate nAndGate(const Gate &in1, const Gate &in2) {
 inline Gate notGate(const Gate &in) { return nAndGate(in, in); }
 inline Gate operator!(const Gate &in) { return notGate(in); };
 
-inline Gate andGate(const Gate &in1, const Gate &in2) { return !nAndGate(in1, in2); }
-inline Gate operator&(const Gate &in1, const Gate &in2) { return andGate(in1, in2); }
+inline Gate andGate(const Gate &in1, const Gate &in2) {
+  return !nAndGate(in1, in2);
+}
+inline Gate operator&(const Gate &in1, const Gate &in2) {
+  return andGate(in1, in2);
+}
 
-inline Gate orGate(const Gate &in1, const Gate &in2) { return !((!in1) & (!in2)); }
-inline Gate operator|(const Gate &in1, const Gate &in2) { return orGate(in1, in2); }
+inline Gate orGate(const Gate &in1, const Gate &in2) {
+  return !((!in1) & (!in2));
+}
+inline Gate operator|(const Gate &in1, const Gate &in2) {
+  return orGate(in1, in2);
+}
 
 inline Gate xorGate(const Gate &in1, const Gate &in2) {
   return ((!in1) & in2) | (in1 & (!in2));
@@ -39,7 +47,9 @@ inline std::ostream &operator<<(std::ostream &os, const Gate &g) {
   return os;
 }
 
-inline Gate operator==(const Gate& left, const Gate &right) { return !xorGate(left, right); }
+inline Gate operator==(const Gate &left, const Gate &right) {
+  return !xorGate(left, right);
+}
 
 inline Gate operator==(const Bus &left, const Bus &right) {
   Gate match = {true};

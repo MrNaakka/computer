@@ -5,11 +5,11 @@
 
 struct Counter {
 private:
-  Register r;
+  Register r{};
 
 public:
-  std::array<Gate, 2> selectorSignal; // increment, load, reset, empty
-  Bus in;
+  std::array<Gate, 2> selectorSignal{}; // increment, load, reset, empty
+  Bus in{};
 
   Bus read() const { return r.read(); }
 
@@ -21,9 +21,9 @@ public:
 
     Bus loadRes = in;
 
-    Bus resetRes {};
+    Bus resetRes{};
 
-    std::array<Bus, 3> muxIn {incrementRes, loadRes, resetRes};
+    std::array<Bus, 3> muxIn{incrementRes, loadRes, resetRes};
     Bus newIn = muxBusNTo1(muxIn, selectorSignal);
     r.in = newIn;
     r.load = {true};
