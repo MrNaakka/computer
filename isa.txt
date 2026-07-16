@@ -7,26 +7,26 @@ opcode output input1 input2 constant
 
 opcode:
 
-0000 = load
-0001 = load-high
+0. 0000 = load
+1. 0001 = load-high
 
-0010 = add
-0011 = substract
-0100 = isEqual
-0101 = isLessThan
-0110 = and
-0111 = or
-1000 = not
+2. 0010 = add
+3. 0011 = substract
+4. 0100 = isEqual
+5. 0101 = isLessThan
+6. 0110 = and
+7. 0111 = or
+8. 1000 = not
 
-1001 = write
-1010 = read
+9. 1001 = write
+10. 1010 = read
 
-1011 = moveToInstruction
-1100 = -
-1101 = -
-1110 = -
+11. 1011 = moveToInstruction
+12. 1100 = -
+13. 1101 = -
+14. 1110 = -
 
-1111 = stop
+15. 1111 = stop
 
 
 instructions:
@@ -37,7 +37,7 @@ load-high output - - constant
 
 add output input1 input2 -
 substract output input1 input2 -
-isEqual input1 inpu2 output -
+isEqual output input1 inpu2 -
 isLessThan input1 inpu2 output -
 and input1 inpu2 output -
 or input1 input2 output -
@@ -112,7 +112,4 @@ if halt, then stop everything.
 general contorl signals:
 - from groups 1, 2, 3, 5, we need to decide which gets the output.
     - also when one of these is executed then the load signal for the specified register should be 1, else 0.
-
-
-
 
