@@ -24,11 +24,8 @@ private:
   DFF dff{};
 
 public:
-  void tick() {
-    Gate res = mux1Bit(dff.read(), in, load);
-    dff.d = res;
-    dff.tick();
-  }
+  void settle() { dff.d = mux1Bit(dff.read(), in, load); }
+  void latch() { dff.tick(); }
 
   Gate load{};
   Gate in{};
@@ -43,12 +40,18 @@ public:
   Gate load{};
   Bus in{};
 
-  void tick() {
+  void settle() {
     for (int i = 0; i < WORD; ++i) {
       Register1Bit &bit = bits[i];
       bit.in = in[i];
       bit.load = load;
-      bit.tick();
+      bit.settle();
+    }
+  }
+  void latch() {
+    for (int i = 0; i < WORD; ++i) {
+      Register1Bit &bit = bits[i];
+      bit.latch();
     }
   }
 
@@ -79,7 +82,7 @@ public:
     }
     return result;
   }
-  void tick() {
+  void settle() {
     for (uint32_t i = 0; i < N; ++i) {
       Register &r = registers[i];
 
@@ -87,7 +90,13 @@ public:
       r.in = in;
       r.load = load & match;
 
-      r.tick();
+      r.settle();
+    }
+  }
+  void latch() {
+    for (uint32_t i = 0; i < N; ++i) {
+      Register &r = registers[i];
+      r.latch();
     }
   }
 };

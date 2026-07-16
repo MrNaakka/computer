@@ -13,7 +13,7 @@ public:
 
   Bus read() const { return r.read(); }
 
-  void tick() {
+  void settle() {
     Bus addOne{};
     addOne[0] = {true};
     Bus current = r.read();
@@ -27,6 +27,9 @@ public:
     Bus newIn = muxBusNTo1(muxIn, selectorSignal);
     r.in = newIn;
     r.load = {true};
-    r.tick();
+    r.settle();
+  }
+  void latch() {
+    r.latch();
   }
 };
