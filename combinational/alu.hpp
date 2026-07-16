@@ -10,9 +10,10 @@ struct Alu1BitResult {
   Gate addOut;
 };
 
-inline Alu1BitResult alu1Bit(Gate in1, Gate in2, Gate less, Gate in1SS,
-                             Gate in2SS, Gate carryIn,
-                             std::array<Gate, 2> operatorSS) {
+inline Alu1BitResult alu1Bit(const Gate &in1, const Gate &in2, const Gate &less,
+                             const Gate &in1SS, const Gate &in2SS,
+                             const Gate &carryIn,
+                             const std::array<Gate, 2> &operatorSS) {
 
   Gate i1 = mux1Bit(in1, !in1, in1SS);
   Gate i2 = mux1Bit(in2, !in2, in2SS);
@@ -35,8 +36,9 @@ struct AluBusResult {
   Gate overflow;
 };
 
-inline AluBusResult aluBus(Bus &in1, Bus &in2, Gate in1SS, Gate in2SS,
-                           Gate eqSS, std::array<Gate, 2> operatorSS) {
+inline AluBusResult aluBus(const Bus &in1, const Bus &in2, const Gate &in1SS,
+                           const Gate &in2SS, const Gate &eqSS,
+                           const std::array<Gate, 2> &operatorSS) {
   Gate carryIn = in2SS;
   Bus resultBus{};
   Gate addOutMSB{};
@@ -58,8 +60,8 @@ inline AluBusResult aluBus(Bus &in1, Bus &in2, Gate in1SS, Gate in2SS,
 
   resultBus[0] = res0.result;
 
-  //for the equal operator
-  Gate has1 {};
+  // for the equal operator
+  Gate has1{};
   for (int i = 0; i < WORD; ++i) {
     has1 = resultBus[i] | has1;
   }

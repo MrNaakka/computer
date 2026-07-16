@@ -1,22 +1,21 @@
 
 #pragma once
-#include "multiplexor.hpp"
 #include "gates.hpp"
+#include "multiplexor.hpp"
 template <typename T> struct WithCarrieOut {
   T result;
   Gate carry_out;
 };
 
-inline WithCarrieOut<Gate> add1Bit(Gate in1, Gate in2, Gate carry_in) {
-
-
-
+inline WithCarrieOut<Gate> add1Bit(const Gate &in1, const Gate &in2,
+                                   const Gate &carry_in) {
   Gate result = xorGate(xorGate(in1, in2), carry_in);
   Gate carry_out = (in1 & in2) | (in1 & carry_in) | (in2 & carry_in);
   return {result, carry_out};
 }
 
-inline WithCarrieOut<Bus> addBus(Bus &in1, Bus &in2, Gate signal) {
+inline WithCarrieOut<Bus> addBus(const Bus &in1, const Bus &in2,
+                                 const Gate &signal) {
 
   Bus result;
   Gate carry_in = signal;
