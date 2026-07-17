@@ -30,10 +30,6 @@ inline InputsAndOutputs getInputsAndOutputs(const Bus &instruction,
   return {input1, input2, output, outputAddress};
 }
 
-struct CpuInput {
-  Bus instruction{};
-  Bus memoryReadData{};
-};
 struct MemoryPort {
   Bus address{};
   Bus writeData{};
@@ -50,21 +46,19 @@ private:
   InputsAndOutputs inputsAndOutputs{};
 
 public:
-  CpuInput input{};
   MemoryPort memoryPort{};
 
   Bus instructionAddress() const { return counter.read(); }
 
-  void settleDecode() {
-    decodeResult = instructionDecoder(input.instruction);
-    inputsAndOutputs = getInputsAndOutputs(input.instruction, registers);
+  void settleDecode(const Bus &instruction) {
+    decodeResult = instructionDecoder(instruction);
+    inputsAndOutputs = getInputsAndOutputs(instruction, registers);
 
     memoryPort = {inputsAndOutputs.input1, inputsAndOutputs.input2,
                   decodeResult.writeToAddress};
   }
-  void settleExecute() {
-    const auto& [instruction, memoryReadData] = input;
-    auto [input1, input2, output, outputAddress] = inputsAndOutputs;
+  void settleExecute(const Bus &instruction, const Bus &memoryReadData) {
+    const auto& [input1, input2, output, outputAddress] = inputsAndOutputs;
 
     auto aluRes =
         aluBus(input1, input2, decodeResult.acb.in1SS, decodeResult.acb.in2SS,
@@ -78,16 +72,11 @@ public:
     Bus outputRes =
         muxBusNTo1(possibleOutputChoices, decodeResult.whatToWriteToOutput);
 
-    registers.load = decodeResult.writeToOutput & (!decodeResult.haltFlag);
-    registers.writeAddress = outputAddress;
-    registers.in = outputRes;
-    registers.settle();
+    registers.settle(outputRes, outputAddress,
+                     decodeResult.writeToOutput & (!decodeResult.haltFlag));
 
-    counter.selectorSignal = decodeResult.counterSS;
-    counter.condition = input2[0];
-    counter.in = input1;
-    counter.halt = decodeResult.haltFlag;
-    counter.settle();
+    counter.settle(input1, decodeResult.counterSS, input2[0],
+                   decodeResult.haltFlag);
 
     halt.d = decodeResult.haltFlag;
   }

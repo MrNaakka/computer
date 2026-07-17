@@ -24,11 +24,11 @@ private:
   DFF dff{};
 
 public:
-  void settle() { dff.d = mux1Bit(dff.read(), in, load); }
+  void settle(const Gate &in, const Gate &load) {
+    dff.d = mux1Bit(dff.read(), in, load);
+  }
   void latch() { dff.tick(); }
 
-  Gate load{};
-  Gate in{};
   Gate read() const { return dff.read(); }
 };
 
@@ -37,15 +37,10 @@ private:
   std::array<Register1Bit, WORD> bits{};
 
 public:
-  Gate load{};
-  Bus in{};
-
-  void settle() {
+  void settle(const Bus &in, const Gate &load) {
     for (int i = 0; i < WORD; ++i) {
       Register1Bit &bit = bits[i];
-      bit.in = in[i];
-      bit.load = load;
-      bit.settle();
+      bit.settle(in[i], load);
     }
   }
   void latch() {
@@ -77,11 +72,6 @@ private:
   }
 
 public:
-  Bus in{};
-
-  Gate load{};
-  Bus writeAddress{};
-
   Bus read(const std::array<Gate, ceilLog2(N)> &readAddress) const {
     Bus result{};
     for (uint32_t i = 0; i < N; i++) {
@@ -94,16 +84,13 @@ public:
     return read(getAddressBits(readAddress));
   }
 
-  void settle() {
+  void settle(const Bus &in, const Bus &writeAddress, const Gate &load) {
+    auto wa = getAddressBits(writeAddress);
     for (uint32_t i = 0; i < N; ++i) {
       Register &r = registers[i];
-
-      auto wa = getAddressBits(writeAddress);
       Gate match = addressMatch(wa, i);
-      r.in = in;
-      r.load = load & match;
 
-      r.settle();
+      r.settle(in, load & match);
     }
   }
   void latch() {

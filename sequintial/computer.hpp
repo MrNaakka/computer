@@ -10,16 +10,14 @@ private:
 
   void settle() {
 
-    cpu.input.instruction = ram.read(cpu.instructionAddress());
-    cpu.settleDecode();
+    Bus instruction = ram.read(cpu.instructionAddress());
+    cpu.settleDecode(instruction);
 
-    cpu.input.memoryReadData = ram.read(cpu.memoryPort.address);
-    cpu.settleExecute();
+    Bus memoryReadData = ram.read(cpu.memoryPort.address);
+    cpu.settleExecute(instruction, memoryReadData);
 
-    ram.load = cpu.memoryPort.writeLoad;
-    ram.writeAddress = cpu.memoryPort.address;
-    ram.in = cpu.memoryPort.writeData;
-    ram.settle();
+    ram.settle(cpu.memoryPort.writeData, cpu.memoryPort.address,
+               cpu.memoryPort.writeLoad);
   }
   void latch() {
     ram.latch();
@@ -32,6 +30,4 @@ public:
     latch();
   }
   Gate readHalt() const { return cpu.readHalt(); }
-
-
 };

@@ -8,14 +8,10 @@ private:
   Register r{};
 
 public:
-  std::array<Gate, 2> selectorSignal{}; // increment, load, reset, empty
-  Bus in{};
-  Gate condition;
-  Gate halt;
-
   Bus read() const { return r.read(); }
-
-  void settle() {
+  // increment, load, reset, empty
+  void settle(const Bus &in, const std::array<Gate, 2> &selectorSignal,
+              const Gate &condition, const Gate &halt) {
     Bus addOne{};
     addOne[0] = {true};
     Bus current = r.read();
@@ -29,9 +25,7 @@ public:
     Bus newIn = muxBusNTo1(muxIn, selectorSignal);
     newIn = muxBus(newIn, current, halt);
 
-    r.in = newIn;
-    r.load = {true};
-    r.settle();
+    r.settle(newIn, {true});
   }
   void latch() { r.latch(); }
 };
