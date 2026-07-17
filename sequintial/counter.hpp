@@ -10,6 +10,7 @@ private:
 public:
   std::array<Gate, 2> selectorSignal{}; // increment, load, reset, empty
   Bus in{};
+  Gate condition;
 
   Bus read() const { return r.read(); }
 
@@ -19,7 +20,9 @@ public:
     Bus current = r.read();
     Bus incrementRes = addBus(current, addOne, {false}).result;
 
-    Bus loadRes = in;
+
+
+    Bus loadRes = muxBus(incrementRes, in, condition);
 
     Bus resetRes{};
 
