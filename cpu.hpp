@@ -1,3 +1,4 @@
+#pragma once
 #include "./combinational/alu.hpp"
 #include "./combinational/decoder.hpp"
 #include "./combinational/gates.hpp"

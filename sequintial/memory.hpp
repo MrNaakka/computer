@@ -68,7 +68,7 @@ template <std::size_t N> struct RamN {
 private:
   std::array<Register, N> registers{};
 
-  std::array<Gate, ceilLog2(N)> getAddressBits(const Bus & address) {
+  std::array<Gate, ceilLog2(N)> getAddressBits(const Bus &address) const {
     std::array<Gate, ceilLog2(N)> a{};
     for (int i = 0; i < ceilLog2(N); ++i) {
       a[i] = address[i];

@@ -66,3 +66,20 @@ inline Bus operator&(const Bus &left, const Gate &right) {
   }
   return result;
 }
+
+inline Bus operator|(const Bus &l, const Bus &r) {
+  Bus result{};
+  for (int i = 0; i < WORD; ++i) {
+    result[i] = l[i] | r[i];
+  }
+  return result;
+}
+
+inline Bus operator&(const Bus &l, const Bus &r) {
+  Bus result{};
+  for (int i = 0; i < WORD; ++i) {
+    result[i] = l[i] & r[i];
+  }
+  return result;
+}
+

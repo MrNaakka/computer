@@ -41,7 +41,7 @@ isEqual output input1 inpu2 -
 isLessThan input1 inpu2 output -
 and input1 inpu2 output -
 or input1 input2 output -
-not input1 inpu2 output -
+not input1 inpu2 output - (input1 must be the same as input as the point is: (!a) | (!b) = !(a | b) = !a = !b)
 
 write - address input2 -
 readFrom ouput adderss - -
