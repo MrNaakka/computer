@@ -1,7 +1,9 @@
 #pragma once
 #include "../combinational/gates.hpp"
+#include "../helpers/converters.hpp"
 #include "cpu.hpp"
 #include "memory.hpp"
+#include <array>
 
 struct Computer {
 private:
@@ -30,4 +32,14 @@ public:
     latch();
   }
   Gate readHalt() const { return cpu.readHalt(); }
+
+  template <std::size_t N>
+  void bootLoader(const std::array<uint32_t, N>& instructions) {
+    std::array<Bus, N> busses = intsToBusses(instructions);
+    for (uint32_t i = 0; i < N; ++i) {
+      Bus address = intToBus(i);
+      ram.settle(busses[i], address, {true});
+      ram.latch();
+    }
+  }
 };
