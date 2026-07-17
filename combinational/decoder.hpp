@@ -1,4 +1,3 @@
-#include "../sequintial/memory.hpp"
 #include "gates.hpp"
 #include "multiplexor.hpp"
 #include <array>
@@ -17,7 +16,23 @@ struct DecoderResult {
   std::array<Gate, 2> whatToWriteToOutput;
 
   Gate writeToAddress;
+  std::array<Gate, 2> counterSS;
 };
+
+inline std::array<Gate, 2>
+getCounterControlBits(const std::array<Gate, 4> &opcode) {
+  std::array<Gate, 16> counterSSSignals0Bit{
+      Gate{false}, {false}, {false}, {false}, {false}, {false},
+      {false},     {false}, {false}, {false}, {false}, {true},
+      {false},     {false}, {false}, {false}};
+  std::array<Gate, 16> counterSSSignals1Bit{
+      Gate{false}, {false}, {false}, {false}, {false}, {false},
+      {false},     {false}, {false}, {false}, {false}, {false},
+      {false},     {false}, {false}, {false}};
+
+  return {mux1BitNto1(counterSSSignals0Bit, opcode),
+          mux1BitNto1(counterSSSignals1Bit, opcode)};
+}
 
 // and, or, add, less
 // 00, 01, 10, 11
@@ -92,5 +107,5 @@ inline DecoderResult instructionDecoder(const Bus &instruction) {
   Gate writeToAddress = mux1BitNto1(writeToAddressSignals, opcode);
 
   return {getAluControlBits(opcode), writeToOutput, whatToWriteToOutput,
-          writeToAddress};
+          writeToAddress, getCounterControlBits(opcode)};
 }
