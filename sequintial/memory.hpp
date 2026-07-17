@@ -68,11 +68,19 @@ template <std::size_t N> struct RamN {
 private:
   std::array<Register, N> registers{};
 
+  std::array<Gate, ceilLog2(N)> getAddressBits(const Bus & address) {
+    std::array<Gate, ceilLog2(N)> a{};
+    for (int i = 0; i < ceilLog2(N); ++i) {
+      a[i] = address[i];
+    }
+    return a;
+  }
+
 public:
   Bus in{};
 
   Gate load{};
-  std::array<Gate, ceilLog2(N)> writeAddress{};
+  Bus writeAddress{};
 
   Bus read(const std::array<Gate, ceilLog2(N)> &readAddress) const {
     Bus result{};
@@ -82,11 +90,16 @@ public:
     }
     return result;
   }
+  Bus read(const Bus &readAddress) const {
+    return read(getAddressBits(readAddress));
+  }
+
   void settle() {
     for (uint32_t i = 0; i < N; ++i) {
       Register &r = registers[i];
 
-      Gate match = addressMatch(writeAddress, i);
+      auto wa = getAddressBits(writeAddress);
+      Gate match = addressMatch(wa, i);
       r.in = in;
       r.load = load & match;
 
@@ -102,3 +115,4 @@ public:
 };
 
 using Registers16 = RamN<16>;
+using Ram1024 = RamN<1024>;
