@@ -34,6 +34,7 @@ struct Cpu {
 private:
   Registers16 registers{};
   Counter counter{};
+  DFF halt{};
 
 public:
   Ram1024 ram{};
@@ -42,6 +43,7 @@ public:
     Bus instructionAddress = counter.read();
     Bus instruction = ram.read(instructionAddress);
     auto controlFlags = instructionDecoder(instruction);
+
 
     auto [input1, input2, output, outputAddress] =
         getInputsAndOutputs(instruction, registers);
@@ -58,7 +60,7 @@ public:
     Bus outputRes =
         muxBusNTo1(possibleOutputChoices, controlFlags.whatToWriteToOutput);
 
-    registers.load = controlFlags.writeToOutput;
+    registers.load = controlFlags.writeToOutput & (!controlFlags.haltFlag);
     registers.writeAddress = outputAddress;
     registers.in = outputRes;
     registers.settle();
@@ -70,14 +72,19 @@ public:
 
     ram.writeAddress = input1;
     ram.in = input2;
-    ram.load = controlFlags.writeToAddress;
+    ram.load = controlFlags.writeToAddress & (!controlFlags.haltFlag);
 
     ram.settle();
+
+    halt.d = controlFlags.haltFlag;
   }
 
   void latch() {
     registers.latch();
     counter.latch();
     ram.latch();
+    halt.tick();
   }
+
+  Gate readHalt() const { halt.read(); }
 };

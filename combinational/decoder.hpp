@@ -18,7 +18,17 @@ struct DecoderResult {
 
   Gate writeToAddress;
   std::array<Gate, 2> counterSS;
+
+  Gate haltFlag;
 };
+
+inline Gate getHaltFlag(const std::array<Gate, 4> &opcode) {
+  std::array<Gate, 16> haltSignals{Gate{false}, {false}, {false}, {false},
+                                   {false},     {false}, {false}, {false},
+                                   {false},     {false}, {false}, {false},
+                                   {false},     {false}, {false}, {true}};
+  return mux1BitNto1(haltSignals, opcode);
+}
 
 inline std::array<Gate, 2>
 getCounterControlBits(const std::array<Gate, 4> &opcode) {
@@ -107,6 +117,7 @@ inline DecoderResult instructionDecoder(const Bus &instruction) {
 
   Gate writeToAddress = mux1BitNto1(writeToAddressSignals, opcode);
 
-  return {getAluControlBits(opcode), writeToOutput, whatToWriteToOutput,
-          writeToAddress, getCounterControlBits(opcode)};
+  return {getAluControlBits(opcode),     writeToOutput,
+          whatToWriteToOutput,           writeToAddress,
+          getCounterControlBits(opcode), getHaltFlag(opcode)};
 }

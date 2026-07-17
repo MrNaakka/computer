@@ -11,6 +11,7 @@ public:
   std::array<Gate, 2> selectorSignal{}; // increment, load, reset, empty
   Bus in{};
   Gate condition;
+  Gate halt;
 
   Bus read() const { return r.read(); }
 
@@ -20,19 +21,17 @@ public:
     Bus current = r.read();
     Bus incrementRes = addBus(current, addOne, {false}).result;
 
-
-
     Bus loadRes = muxBus(incrementRes, in, condition);
 
     Bus resetRes{};
 
     std::array<Bus, 3> muxIn{incrementRes, loadRes, resetRes};
     Bus newIn = muxBusNTo1(muxIn, selectorSignal);
+    newIn = muxBus(newIn, current, halt);
+
     r.in = newIn;
     r.load = {true};
     r.settle();
   }
-  void latch() {
-    r.latch();
-  }
+  void latch() { r.latch(); }
 };
