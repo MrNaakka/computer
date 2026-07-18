@@ -5,10 +5,9 @@
 #include <iostream>
 #include <string>
 
-
 #include "../combinational/adder.hpp"
-#include "../combinational/gates.hpp"
 #include "../combinational/alu.hpp"
+#include "../combinational/gates.hpp"
 
 void calculator() {
   uint32_t num1;
@@ -40,8 +39,9 @@ void calculator() {
 
     auto result = addBus(in1, in2, isSubstrac);
     std::cout << "here is the result num: " << result.result << std::endl;
-    
-    auto aluRes = aluBus(in1, in2, {.value = false}, isSubstrac, {Gate{.value = false}, Gate{.value = true}});
+
+    auto aluRes = aluBus(in1, in2, {.value = false}, isSubstrac, {false},
+                         {Gate{.value = false}, Gate{.value = true}});
     std::cout << "here is the alu num: " << aluRes.result << std::endl;
 
     std::string cont;
@@ -52,4 +52,9 @@ void calculator() {
       play = false;
     }
   }
+}
+
+int main() {
+  calculator();
+  return 0;
 }
