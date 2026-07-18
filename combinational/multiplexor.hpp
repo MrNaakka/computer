@@ -40,8 +40,6 @@ inline Gate addressMatch(const std::array<Gate, N> &address,
 template <std::size_t n>
 Gate mux1BitNto1(const std::array<Gate, n> &in1,
                  const std::array<Gate, ceilLog2(n)> &selectorSignal) {
-  auto k = ceilLog2(n);
-
   Gate result{};
   for (uint32_t i = 0; i < n; ++i) {
     Gate match = addressMatch(selectorSignal, i);
@@ -57,7 +55,7 @@ Bus muxBusNTo1(const std::array<Bus, n> &in1,
 
   std::array<Gate, n> currentIndexGates;
   for (int i = 0; i < WORD; ++i) {
-    for (int j = 0; j < n; ++j) {
+    for (uint32_t j = 0; j < n; ++j) {
       currentIndexGates[j] = in1[j][i];
     }
 

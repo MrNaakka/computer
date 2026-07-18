@@ -13,7 +13,7 @@ inline Bus intToBus(const uint32_t &num) {
 template <std::size_t N>
 std::array<Bus, N> intsToBusses(const std::array<uint32_t, N> &nums) {
   std::array<Bus, N> res{};
-  for (int i = 0; i < N; ++i) {
+  for (uint32_t i = 0; i < N; ++i) {
     res[i] = intToBus(nums[i]);
   }
   return res;
@@ -21,7 +21,7 @@ std::array<Bus, N> intsToBusses(const std::array<uint32_t, N> &nums) {
 
 inline uint32_t busToInt(const Bus &b) {
   uint32_t res{};
-  for (int i = 0; i < WORD; ++i) {
+  for (uint32_t i = 0; i < WORD; ++i) {
     res = res | (static_cast<uint32_t>(b[i].value) << i);
   }
   return res;
@@ -30,7 +30,7 @@ inline uint32_t busToInt(const Bus &b) {
 template <std::size_t N>
 std::array<uint32_t, N> bussesToInts(const std::array<Bus, N> &busses) {
   std::array<uint32_t, N> res{};
-  for (int i = 0; i < N; ++i) {
+  for (uint32_t i = 0; i < N; ++i) {
     res[i] = busToInt(busses[i]);
   }
   return res;

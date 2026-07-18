@@ -2,6 +2,7 @@
 #include "../combinational/gates.hpp"
 #include "../combinational/multiplexor.hpp"
 #include <array>
+#include <cstdint>
 
 // assuming only a d-flip-flop
 // every other memory element is built on top of that usign combinational logic
@@ -65,7 +66,7 @@ private:
 
   std::array<Gate, ceilLog2(N)> getAddressBits(const Bus &address) const {
     std::array<Gate, ceilLog2(N)> a{};
-    for (int i = 0; i < ceilLog2(N); ++i) {
+    for (uint32_t i = 0; i < ceilLog2(N); ++i) {
       a[i] = address[i];
     }
     return a;
@@ -101,7 +102,7 @@ public:
   }
   std::array<Bus, N> readAll() const {
     std::array<Bus, N> result{};
-    for (int i = 0; i < N; ++i) {
+    for (uint32_t i = 0; i < N; ++i) {
       result[i] = registers[i].read();
     }
     return result;
