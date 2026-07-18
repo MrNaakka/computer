@@ -1,10 +1,12 @@
 #pragma once
-#include "../combinational/gates.hpp"
-#include "../helpers/converters.hpp"
 #include "cpu.hpp"
 #include "memory.hpp"
 #include <array>
 
+struct ComputerState {
+  std::array<Bus, 1024> ram;
+  CpuState cpu;
+};
 struct Computer {
 private:
   Ram1024 ram{};
@@ -34,12 +36,15 @@ public:
   Gate readHalt() const { return cpu.readHalt(); }
 
   template <std::size_t N>
-  void bootLoader(const std::array<uint32_t, N>& instructions) {
-    std::array<Bus, N> busses = intsToBusses(instructions);
+  void bootLoader(const std::array<Bus, N> &instructions,
+                  const std::array<Bus, N> &addresses) {
     for (uint32_t i = 0; i < N; ++i) {
-      Bus address = intToBus(i);
-      ram.settle(busses[i], address, {true});
+      ram.settle(instructions[i], addresses[i], {true});
       ram.latch();
     }
+  }
+
+  ComputerState getComputerState() {
+    return {ram.readAll(), cpu.getCpuState()};
   }
 };

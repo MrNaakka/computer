@@ -99,6 +99,13 @@ public:
       r.latch();
     }
   }
+  std::array<Bus, N> readAll() const {
+    std::array<Bus, N> result{};
+    for (int i = 0; i < N; ++i) {
+      result[i] = registers[i].read();
+    }
+    return result;
+  }
 };
 
 using Registers16 = RamN<16>;

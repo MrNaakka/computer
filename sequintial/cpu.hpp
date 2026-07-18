@@ -13,6 +13,7 @@ struct InputsAndOutputs {
   Bus output;
   Bus outputAddress;
 };
+
 inline InputsAndOutputs getInputsAndOutputs(const Bus &instruction,
                                             const Registers16 &registers) {
   Bus input1Address{instruction[20], instruction[21], instruction[22],
@@ -34,6 +35,12 @@ struct MemoryPort {
   Bus address{};
   Bus writeData{};
   Gate writeLoad{};
+};
+
+struct CpuState {
+  std::array<Bus, 16> registers;
+  Bus pc;
+  Gate halt;
 };
 
 struct Cpu {
@@ -58,7 +65,7 @@ public:
                   decodeResult.writeToAddress};
   }
   void settleExecute(const Bus &instruction, const Bus &memoryReadData) {
-    const auto& [input1, input2, output, outputAddress] = inputsAndOutputs;
+    const auto &[input1, input2, output, outputAddress] = inputsAndOutputs;
 
     auto aluRes =
         aluBus(input1, input2, decodeResult.acb.in1SS, decodeResult.acb.in2SS,
@@ -89,4 +96,7 @@ public:
   }
 
   Gate readHalt() const { return halt.read(); }
+  CpuState getCpuState() {
+    return {registers.readAll(), counter.read(), halt.read()};
+  }
 };
