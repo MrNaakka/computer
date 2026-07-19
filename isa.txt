@@ -21,8 +21,8 @@ opcode:
 9. 1001 = write
 10. 1010 = read
 
-11. 1011 = moveToInstruction
-12. 1100 = -
+11. 1011 = jump to instruction, if condition
+12. 1100 = jump to instruction always
 13. 1101 = -
 14. 1110 = -
 
@@ -46,7 +46,8 @@ not input1 inpu2 output - (input1 must be the same as input as the point is: (!a
 write - address input2 -
 readFrom ouput adderss - -
 
-moveToInstruction - address condition -
+jmpc - - condition address
+jmpa - - - adderss
 
 stop - - - -
 

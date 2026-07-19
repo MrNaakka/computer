@@ -10,6 +10,11 @@ struct AluControlBits {
   Gate eqSS;
 };
 
+struct CounterControlBits {
+  Gate counterSS;
+  Gate useCondition;
+};
+
 struct DecoderResult {
   AluControlBits acb;
 
@@ -17,7 +22,7 @@ struct DecoderResult {
   std::array<Gate, 2> whatToWriteToOutput;
 
   Gate writeToAddress;
-  std::array<Gate, 2> counterSS;
+  CounterControlBits counterControlBits;
 
   Gate haltFlag;
 };
@@ -30,19 +35,20 @@ inline Gate getHaltFlag(const std::array<Gate, 4> &opcode) {
   return mux1BitNto1(haltSignals, opcode);
 }
 
-inline std::array<Gate, 2>
+inline CounterControlBits
 getCounterControlBits(const std::array<Gate, 4> &opcode) {
-  std::array<Gate, 16> counterSSSignals0Bit{
+  std::array<Gate, 16> counterSSSignals{Gate{false}, {false}, {false}, {false},
+                                        {false},     {false}, {false}, {false},
+                                        {false},     {false}, {false}, {true},
+                                        {true},      {false}, {false}, {false}};
+
+  std::array<Gate, 16> useConditonSignals{
       Gate{false}, {false}, {false}, {false}, {false}, {false},
       {false},     {false}, {false}, {false}, {false}, {true},
-      {false},     {false}, {false}, {false}};
-  std::array<Gate, 16> counterSSSignals1Bit{
-      Gate{false}, {false}, {false}, {false}, {false}, {false},
-      {false},     {false}, {false}, {false}, {false}, {false},
-      {false},     {false}, {false}, {false}};
+      {false},      {false}, {false}, {false}};
 
-  return {mux1BitNto1(counterSSSignals0Bit, opcode),
-          mux1BitNto1(counterSSSignals1Bit, opcode)};
+  return {mux1BitNto1(counterSSSignals, opcode),
+          mux1BitNto1(useConditonSignals, opcode)};
 }
 
 // and, or, add, less

@@ -9,20 +9,20 @@ private:
 
 public:
   Bus read() const { return r.read(); }
-  // increment, load, reset, empty
-  void settle(const Bus &in, const std::array<Gate, 2> &selectorSignal,
-              const Gate &condition, const Gate &halt) {
+  // increment, load
+  void settle(const Bus &in, const Gate &selectorSignal, const Gate &condition,
+              const Gate &useCondition, const Gate &halt) {
     Bus addOne{};
     addOne[0] = {true};
     Bus current = r.read();
     Bus incrementRes = addBus(current, addOne, {false}).result;
 
-    Bus loadRes = muxBus(incrementRes, in, condition);
+    Gate realCondition = mux1Bit({true}, condition, useCondition);
 
-    Bus resetRes{};
+    Bus loadRes = muxBus(incrementRes, in, realCondition);
 
-    std::array<Bus, 3> muxIn{incrementRes, loadRes, resetRes};
-    Bus newIn = muxBusNTo1(muxIn, selectorSignal);
+    Bus newIn = muxBus(incrementRes, loadRes, selectorSignal);
+
     newIn = muxBus(newIn, current, halt);
 
     r.settle(newIn, {true});

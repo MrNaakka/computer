@@ -82,7 +82,8 @@ public:
     registers.settle(outputRes, outputAddress,
                      decodeResult.writeToOutput & (!decodeResult.haltFlag));
 
-    counter.settle(input1, decodeResult.counterSS, input2[0],
+    counter.settle(loadRes, decodeResult.counterControlBits.counterSS,
+                   input2[0], decodeResult.counterControlBits.useCondition,
                    decodeResult.haltFlag);
 
     halt.d = decodeResult.haltFlag;
