@@ -1,7 +1,7 @@
-#include "../combinational/gates.hpp"
-#include "../helpers/converters.hpp"
-#include "../helpers/snapshot.hpp"
-#include "../sequintial/computer.hpp"
+#include "../../combinational/gates.hpp"
+#include "../../helpers/converters.hpp"
+#include "../../helpers/snapshot.hpp"
+#include "../../sequintial/computer.hpp"
 #include <iostream>
 
 int main() {
