@@ -13,6 +13,7 @@ struct AluControlBits {
 struct CounterControlBits {
   Gate counterSS;
   Gate useCondition;
+  Gate useConstantSlot;
 };
 
 struct DecoderResult {
@@ -40,15 +41,21 @@ getCounterControlBits(const std::array<Gate, 4> &opcode) {
   std::array<Gate, 16> counterSSSignals{Gate{false}, {false}, {false}, {false},
                                         {false},     {false}, {false}, {false},
                                         {false},     {false}, {false}, {true},
-                                        {true},      {false}, {false}, {false}};
+                                        {true},      {true},  {false}, {false}};
 
   std::array<Gate, 16> useConditonSignals{
       Gate{false}, {false}, {false}, {false}, {false}, {false},
       {false},     {false}, {false}, {false}, {false}, {true},
-      {false},      {false}, {false}, {false}};
+      {false},     {false}, {false}, {false}};
+
+  std::array<Gate, 16> useConstantSlotSignals{
+      Gate{false}, {false}, {false}, {false}, {false}, {false},
+      {false},     {false}, {false}, {false}, {false}, {true},
+      {true},      {false}, {false}, {false}};
 
   return {mux1BitNto1(counterSSSignals, opcode),
-          mux1BitNto1(useConditonSignals, opcode)};
+          mux1BitNto1(useConditonSignals, opcode),
+          mux1BitNto1(useConstantSlotSignals, opcode)};
 }
 
 // and, or, add, less

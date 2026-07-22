@@ -33,14 +33,18 @@ inline OpSpec group6(uint32_t opcode) {
   return {opcode, {Slot::Input2, Slot::Const}};
 }
 inline OpSpec group7(uint32_t opcode) { return {opcode, {Slot::Const}}; }
-inline OpSpec group8(uint32_t opcode) { return {opcode, {}}; }
+inline OpSpec group8(uint32_t opcode) { return {opcode, {Slot::Input1}}; }
+inline OpSpec group9(uint32_t opcode) { return {opcode, {}}; }
 
 const std::unordered_map<std::string, OpSpec> IsaSpecs = {
-    {"load", group2(0)},  {"load-high", group2(1)}, {"add", group1(2)},
-    {"sub", group1(3)},   {"eq", group1(4)},        {"lt", group1(5)},
-    {"and", group1(6)},   {"or", group1(7)},        {"not", group3(8)},
-    {"write", group4(9)}, {"read", group5(10)},     {"jmpc", group6(11)},
-    {"jmpa", group7(12)}, {"halt", group8(15)}
+    {"load", group2(0)},  {"load-high", group2(1)},
+    {"add", group1(2)},   {"sub", group1(3)},
+    {"eq", group1(4)},    {"lt", group1(5)},
+    {"and", group1(6)},   {"or", group1(7)},
+    {"not", group3(8)},   {"write", group4(9)},
+    {"read", group5(10)}, {"jmpc", group6(11)},
+    {"jmpa", group7(12)}, {"jmpr", group8(13)},
+    {"halt", group9(15)}
 
 };
 

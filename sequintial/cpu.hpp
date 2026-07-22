@@ -82,7 +82,9 @@ public:
     registers.settle(outputRes, outputAddress,
                      decodeResult.writeToOutput & (!decodeResult.haltFlag));
 
-    counter.settle(loadRes, decodeResult.counterControlBits.counterSS,
+
+    Bus jumpToAddress = muxBus(input1, loadRes, decodeResult.counterControlBits.useConstantSlot);
+    counter.settle(jumpToAddress, decodeResult.counterControlBits.counterSS,
                    input2[0], decodeResult.counterControlBits.useCondition,
                    decodeResult.haltFlag);
 

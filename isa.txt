@@ -23,7 +23,7 @@ opcode:
 
 11. 1011 = jump to instruction, if condition
 12. 1100 = jump to instruction always
-13. 1101 = -
+13. 1101 = jump to instruction always, take address from register
 14. 1110 = -
 
 15. 1111 = stop
@@ -48,6 +48,7 @@ readFrom ouput adderss - -
 
 jmpc - - condition address
 jmpa - - - adderss
+jmpr - address - -
 
 stop - - - -
 
